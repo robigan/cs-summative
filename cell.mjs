@@ -23,10 +23,33 @@ class Cell {
         this.alive = Math.random() > 0.75;
     }
 
-    draw() {
+    async draw() {
         // Draw a square, let the state determine the color
         this.#context.fillStyle = this.alive?'#303030':'#ffffff';
         this.#context.fillRect(this.gridX, this.gridY, Cell.width, Cell.height);
+    }
+
+    /**
+     * @param {boolean[]} surroundingStates 
+     */
+    async determineState(surroundingStates) {
+        let surroundingAlives = 0;
+        surroundingStates.forEach((state) => state === true ? surroundingAlives++ : undefined);
+
+        if (surroundingAlives == 2) {
+            // Do nothing
+        } else if (surroundingAlives == 3) {
+            this.alive = true;
+        } else {
+            this.alive = false;
+        }
+    }
+
+    /**
+     * @param {boolean} state 
+     */
+    setState(state) {
+        this.alive = state;
     }
 }
 

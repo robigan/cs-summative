@@ -14,23 +14,30 @@ class Game {
         this.#context = this.#gameWorld.context;
         this.#canvas = canvas;
 
-        window.requestAnimationFrame(this.gameLoop);
+        document.body.addEventListener("keydown", (event) => {
+            if (event.code === "Enter") {
+                window.requestAnimationFrame(() => this.gameLoop());
+            }
+        });
+
+        // if
     }
 
-    gameLoop() {
+    async gameLoop() {
         // Check the surrounding of each cell
-        // this.checkSurrounding();
+        this.#gameWorld.checkCells();
     
         // Clear the screen
+        // console.log(this)
         this.#context.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
     
         // Draw all the game objects
-        this.#gameWorld.drawCells();
+        await this.#gameWorld.drawCells();
     
         // The loop function has reached it's end, keep requesting new frames
-        setTimeout( () => {
-            window.requestAnimationFrame(this.gameLoop);
-        }, 1000) // The delay will make the game easier to follow
+        // setTimeout( () => {
+        //     window.requestAnimationFrame(() => this.gameLoop());
+        // }, 1000) // The delay will make the game easier to follow
     }
 }
 

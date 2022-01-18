@@ -17,6 +17,12 @@ const canvasContext = canvas.getContext("2d");
 // const testCell = new Cell(canvasContext, 10, 10);
 // testCell.draw();
 
-new Game(new GameWorld(canvasContext), canvas);
+console.log("\n\n\n\nNEW INSTANCE");
+
+(async () => {
+    const gameWorld = new GameWorld(canvasContext);
+    await gameWorld.createGrid();
+    new Game(gameWorld, canvas);
+})().catch(console.error);
 // gameWorld.createGrid();
 // gameWorld.drawCells();
