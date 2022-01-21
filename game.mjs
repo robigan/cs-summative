@@ -1,3 +1,4 @@
+import { Cell } from "./cell.mjs";
 import { GameWorld } from "./gameworld.mjs";
 
 class Game {
@@ -20,7 +21,17 @@ class Game {
             }
         });
 
-        // if
+        document.body.addEventListener("mousedown", (event) => this.toggleCell(event));
+
+        // if (window.DEBUG) {
+        //     document.body.addEventListener("mousedown", async (event) => {
+        //         if (event.shiftKey) {
+        //             const target = await this.getCursorPosition(event);
+        //             if (target !== undefined) target.toggleDebugState();
+        //             console.debug(target);
+        //         }    
+        //     });
+        // }
     }
 
     async gameLoop() {
@@ -28,16 +39,42 @@ class Game {
         this.#gameWorld.checkCells();
     
         // Clear the screen
-        // console.log(this)
         this.#context.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
     
         // Draw all the game objects
         await this.#gameWorld.drawCells();
-    
-        // The loop function has reached it's end, keep requesting new frames
-        // setTimeout( () => {
-        //     window.requestAnimationFrame(() => this.gameLoop());
-        // }, 1000) // The delay will make the game easier to follow
+    }
+
+    /**
+     * @param {MouseEvent} event 
+     * @returns {(Cell | undefined)}
+     */
+    async getCursorPosition(event) {
+        const rect = this.#canvas.getBoundingClientRect();
+        const x = Math.floor((event.clientX - rect.left) / 10) * 10;
+        const y = Math.floor((event.clientY - rect.top) / 10) * 10;
+        
+        const cell = this.#gameWorld.gridToCell(x, y);
+
+        return cell;
+    }
+
+    /**
+     * @param {MouseEvent} event 
+     */
+    async toggleCell(event) {
+        const cell = await this.getCursorPosition(event);
+
+        if (cell === undefined) return;
+
+        if (event.shiftKey && window.DEBUG) {
+            cell.toggleDebugState();
+            console.debug(cell);
+        } else {
+            cell.setState(!cell.alive);
+        }
+
+        cell.draw();
     }
 }
 

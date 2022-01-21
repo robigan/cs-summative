@@ -1,8 +1,8 @@
 import { Cell } from "./cell.mjs";
 
 class GameWorld {
-    static numRows = 20;
-    static numColumns = 20;
+    numRows = 5;
+    numColumns = 5;
 
     #init = false;
     /**
@@ -16,14 +16,17 @@ class GameWorld {
      */
     constructor(context) {
         this.context = context;
+
+        this.numColumns = document.body.clientWidth / Cell.width;
+        this.numRows = document.body.clientHeight / Cell.height;
         // this.#gameCells = [];
     }
 
     async createGrid() {
         if (this.#init === true) throw new Error("GameWorld already init")
         this.#init = true;
-        for (let y = 0; y < GameWorld.numRows * Cell.height; y += Cell.height) {
-            for (let x = 0; x < GameWorld.numColumns * Cell.width; x += Cell.width) {
+        for (let y = 0; y < this.numRows * Cell.height; y += Cell.height) {
+            for (let x = 0; x < this.numColumns * Cell.width; x += Cell.width) {
                 // this.context.rect(x, y, Cell.width, Cell.height)
                 this.#gameCells.push(new Cell(this.context, x, y));
             }
@@ -61,7 +64,7 @@ class GameWorld {
      * @param {number} y 
      */
     gridToAlive(x, y) {
-        if (x < 0 || x >= GameWorld.numColumns * Cell.width || y < 0 || y >= GameWorld.numRows * Cell.height){
+        if (x < 0 || x >= this.numColumns * Cell.width || y < 0 || y >= this.numRows * Cell.height){
             return false;
         }    
 
@@ -81,7 +84,7 @@ class GameWorld {
      * @param {number} y 
      */
     gridToIndex(x, y) {
-        return (x / Cell.width) + ((y / Cell.height) * GameWorld.numColumns);
+        return (x / Cell.width) + ((y / Cell.height) * this.numColumns);
     }
 }
 
